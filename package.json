@@ -2,13 +2,9 @@
   "name": "yt-monetization-tracker",
   "version": "1.0.0",
   "private": true,
-  "description": "YouTube Shorts monetization tracker — Vercel serverless API (TS) + Supabase Postgres",
-  "type": "module",
+  "description": "YouTube Shorts monetization tracker — Vercel serverless API (TS) + Supabase (REST)",
   "engines": {
     "node": ">=18"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.45.4"
   },
   "devDependencies": {
     "@vercel/node": "^3.2.24",

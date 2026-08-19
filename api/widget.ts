@@ -2,7 +2,7 @@
 // Publiczny endpoint dla widgetu Scriptable. Chroniony statycznym kluczem w query.
 // Zwraca odchudzony JSON. channel=next => rotacja po kanałach wg bieżącej minuty.
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { getSupabase, CHANNELS_TABLE } from "./_lib/supabase";
+import { listChannels } from "./_lib/db";
 import { decorate } from "./_lib/compute";
 import { applyCors, requireWidgetKey, firstParam, wrap } from "./_lib/http";
 import type { ChannelRow, WidgetPayload } from "./_lib/types";
@@ -16,14 +16,7 @@ export default wrap(async function handler(req: VercelRequest, res: VercelRespon
     return res.status(405).json({ error: "Metoda niedozwolona." });
   }
 
-  const supabase = getSupabase();
-  const { data, error } = await supabase
-    .from(CHANNELS_TABLE)
-    .select("*")
-    .order("id", { ascending: true });
-  if (error) return res.status(500).json({ error: error.message });
-
-  const rows = (data as ChannelRow[]) ?? [];
+  const rows = await listChannels();
   if (rows.length === 0) return res.status(404).json({ error: "Brak kanałów." });
 
   const channelParam = (firstParam(req.query.channel) || "next").toLowerCase();

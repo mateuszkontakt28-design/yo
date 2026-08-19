@@ -3,10 +3,9 @@
 // Logika jest już w pełni napisana — wystarczy dodać klucz Data API i youtube_channel_id kanału,
 // żeby zadziałała bez zmian w kodzie.
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { getSupabase, CHANNELS_TABLE } from "../../_lib/supabase";
+import { getChannel, updateChannel } from "../../_lib/db";
 import { decorate } from "../../_lib/compute";
 import { applyCors, requireApiToken, firstParam, wrap } from "../../_lib/http";
-import type { ChannelRow } from "../../_lib/types";
 
 export default wrap(async function handler(req: VercelRequest, res: VercelResponse) {
   if (applyCors(req, res)) return;
@@ -31,17 +30,10 @@ export default wrap(async function handler(req: VercelRequest, res: VercelRespon
     });
   }
 
-  const supabase = getSupabase();
-
   // Pobierz kanał, sprawdź youtube_channel_id.
-  const { data: row, error: fetchErr } = await supabase
-    .from(CHANNELS_TABLE)
-    .select("*")
-    .eq("id", id)
-    .single();
-  if (fetchErr || !row) return res.status(404).json({ error: "Nie znaleziono kanału." });
+  const channel = await getChannel(id);
+  if (!channel) return res.status(404).json({ error: "Nie znaleziono kanału." });
 
-  const channel = row as ChannelRow;
   if (!channel.youtube_channel_id) {
     return res
       .status(400)
@@ -72,13 +64,11 @@ export default wrap(async function handler(req: VercelRequest, res: VercelRespon
     return res.status(502).json({ error: `Błąd połączenia z YouTube API: ${(e as Error).message}` });
   }
 
-  const { data: updated, error: updErr } = await supabase
-    .from(CHANNELS_TABLE)
-    .update({ current_subs: subs, subs_updated_at: new Date().toISOString() })
-    .eq("id", id)
-    .select("*")
-    .single();
-  if (updErr) return res.status(500).json({ error: updErr.message });
+  const updated = await updateChannel(id, {
+    current_subs: subs,
+    subs_updated_at: new Date().toISOString(),
+  });
+  if (!updated) return res.status(404).json({ error: "Nie znaleziono kanału." });
 
-  return res.status(200).json(decorate(updated as ChannelRow));
+  return res.status(200).json(decorate(updated));
 });

@@ -5,10 +5,10 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getSupabase, CHANNELS_TABLE } from "../../_lib/supabase";
 import { decorate } from "../../_lib/compute";
-import { applyCors, requireApiToken, firstParam } from "../../_lib/http";
+import { applyCors, requireApiToken, firstParam, wrap } from "../../_lib/http";
 import type { ChannelRow } from "../../_lib/types";
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default wrap(async function handler(req: VercelRequest, res: VercelResponse) {
   if (applyCors(req, res)) return;
   if (!requireApiToken(req, res)) return;
 
@@ -81,4 +81,4 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (updErr) return res.status(500).json({ error: updErr.message });
 
   return res.status(200).json(decorate(updated as ChannelRow));
-}
+});

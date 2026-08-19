@@ -3,11 +3,11 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getSupabase, CHANNELS_TABLE } from "../_lib/supabase";
 import { decorate } from "../_lib/compute";
-import { applyCors, requireApiToken, parseBody } from "../_lib/http";
+import { applyCors, requireApiToken, parseBody, wrap } from "../_lib/http";
 import { buildInsert } from "../_lib/validate";
 import type { ChannelRow } from "../_lib/types";
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default wrap(async function handler(req: VercelRequest, res: VercelResponse) {
   if (applyCors(req, res)) return;
   if (!requireApiToken(req, res)) return;
 
@@ -37,4 +37,4 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   res.setHeader("Allow", "GET, POST, OPTIONS");
   return res.status(405).json({ error: "Metoda niedozwolona." });
-}
+});

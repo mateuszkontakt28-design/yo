@@ -4,10 +4,10 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getSupabase, CHANNELS_TABLE } from "./_lib/supabase";
 import { decorate } from "./_lib/compute";
-import { applyCors, requireWidgetKey, firstParam } from "./_lib/http";
+import { applyCors, requireWidgetKey, firstParam, wrap } from "./_lib/http";
 import type { ChannelRow, WidgetPayload } from "./_lib/types";
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default wrap(async function handler(req: VercelRequest, res: VercelResponse) {
   if (applyCors(req, res)) return;
   if (!requireWidgetKey(req, res)) return;
 
@@ -53,4 +53,4 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Krótki cache na brzegu, żeby nie bić bazy przy każdym odświeżeniu widgetu.
   res.setHeader("Cache-Control", "public, max-age=30, s-maxage=30");
   return res.status(200).json(payload);
-}
+});

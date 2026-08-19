@@ -1,6 +1,26 @@
 // Pomocniki HTTP: CORS, auth (token dla CRUD, key dla widgetu), parsowanie body.
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
+// Owija handler tak, że żaden wyjątek nie crashuje funkcji (FUNCTION_INVOCATION_FAILED),
+// tylko zwraca czytelny JSON 500 z komunikatem — ułatwia diagnozę.
+export function wrap(
+  fn: (req: VercelRequest, res: VercelResponse) => Promise<unknown> | unknown
+) {
+  return async (req: VercelRequest, res: VercelResponse) => {
+    try {
+      await fn(req, res);
+    } catch (e) {
+      const err = e as Error;
+      if (!res.headersSent) {
+        res.status(500).json({
+          error: err?.message || String(e),
+          where: "handler",
+        });
+      }
+    }
+  };
+}
+
 // Dashboard i /api są zwykle na tej samej domenie Vercela (same-origin, CORS zbędny),
 // ale gdy dashboard stoi osobno — pozwalamy na *. Endpointy CRUD i tak chroni token.
 export function applyCors(req: VercelRequest, res: VercelResponse): boolean {

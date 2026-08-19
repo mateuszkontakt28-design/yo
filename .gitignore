@@ -1,0 +1,21 @@
+# deps
+node_modules/
+dashboard/node_modules/
+
+# env / sekrety
+.env
+.env.local
+.env*.local
+dashboard/.env
+dashboard/.env.local
+
+# build
+dashboard/dist/
+.vercel/
+
+# logi / os
+*.log
+.DS_Store
+
+# ts build info
+*.tsbuildinfo

@@ -1,0 +1,188 @@
+:root {
+  --bg: #0d1117;
+  --bg-card: #161b22;
+  --bg-input: #0d1117;
+  --border: #22303c;
+  --text: #f0f6fc;
+  --text-dim: #8b949e;
+  --green: #3fb950;
+  --orange: #d29922;
+  --red: #f85149;
+  --blue: #58a6ff;
+  --purple: #bc8cff;
+  --radius: 14px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button { font-family: inherit; cursor: pointer; }
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 16px calc(48px + env(safe-area-inset-bottom));
+}
+
+/* ── Topbar ── */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.topbar h1 { font-size: 22px; margin: 0; letter-spacing: -0.3px; }
+.topbar .sub { margin: 4px 0 0; color: var(--text-dim); font-size: 13px; }
+.topbar-actions { display: flex; gap: 8px; }
+
+/* ── Buttons ── */
+.btn {
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover:not(:disabled) { border-color: #3d4b5c; }
+.btn:disabled { opacity: 0.5; cursor: default; }
+.btn-primary { background: var(--green); border-color: var(--green); color: #05130a; font-weight: 600; }
+.btn-primary:hover:not(:disabled) { filter: brightness(1.08); }
+.btn-danger:hover:not(:disabled) { border-color: var(--red); color: var(--red); }
+
+/* ── Banner ── */
+.banner { padding: 12px 14px; border-radius: 10px; margin-bottom: 16px; font-size: 14px; }
+.banner-err { background: rgba(248, 81, 73, 0.12); border: 1px solid rgba(248, 81, 73, 0.4); color: #ffb4ae; }
+.banner-err button {
+  margin-left: 8px; background: none; border: none; color: var(--blue); text-decoration: underline;
+}
+
+.empty { text-align: center; color: var(--text-dim); padding: 60px 20px; }
+
+/* ── Grid of cards ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.card.pace-green::before { background: var(--green); }
+.card.pace-orange::before { background: var(--orange); }
+.card.pace-red::before { background: var(--red); }
+
+.card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.card-name { font-size: 18px; margin: 0; letter-spacing: -0.2px; }
+.card-meta { display: flex; gap: 8px; align-items: center; margin-top: 4px; flex-wrap: wrap; }
+.tag {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+  background: rgba(88, 166, 255, 0.12); color: var(--blue);
+  padding: 2px 8px; border-radius: 20px;
+}
+.handle { font-size: 12px; color: var(--text-dim); }
+
+.badge {
+  font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; white-space: nowrap;
+}
+.badge-green { background: rgba(63, 185, 80, 0.15); color: var(--green); }
+.badge-orange { background: rgba(210, 153, 34, 0.15); color: var(--orange); }
+.badge-red { background: rgba(248, 81, 73, 0.15); color: var(--red); }
+
+/* ── Countdown ── */
+.countdown { display: flex; align-items: baseline; gap: 10px; padding: 4px 0; }
+.cd-num { font-size: 46px; font-weight: 800; line-height: 1; letter-spacing: -1.5px; }
+.cd-unit { font-size: 14px; color: var(--text-dim); }
+.card.pace-red .cd-num { color: var(--red); }
+
+/* ── Progress bars ── */
+.bars { display: flex; flex-direction: column; gap: 12px; }
+.pb-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+.pb-label { font-size: 13px; color: var(--text-dim); }
+.pb-nums { font-size: 12px; color: var(--text-dim); }
+.pb-nums strong { color: var(--text); }
+.pb-track { height: 8px; background: var(--bg-input); border-radius: 6px; overflow: hidden; }
+.pb-fill { height: 100%; border-radius: 6px; transition: width 0.4s ease; }
+.pb-subs { background: linear-gradient(90deg, #58a6ff, #79c0ff); }
+.pb-views { background: linear-gradient(90deg, #bc8cff, #d2a8ff); }
+
+.updated {
+  display: flex; justify-content: space-between; gap: 8px;
+  font-size: 11px; color: var(--text-dim); flex-wrap: wrap;
+}
+
+/* ── Quick views form ── */
+.quick-views { display: flex; gap: 8px; }
+.quick-views input {
+  flex: 1; min-width: 0;
+  background: var(--bg-input); border: 1px solid var(--border); color: var(--text);
+  border-radius: 9px; padding: 9px 11px; font-size: 14px;
+}
+.quick-views input:focus { outline: none; border-color: var(--blue); }
+.quick-views button {
+  background: var(--bg-input); border: 1px solid var(--border); color: var(--text);
+  border-radius: 9px; padding: 0 14px; font-size: 13px; white-space: nowrap;
+}
+.quick-views button:disabled { opacity: 0.5; }
+
+.card-err { color: var(--red); font-size: 13px; margin: 0; }
+
+.card-actions { display: flex; gap: 8px; }
+.card-actions .btn { flex: 1; padding: 8px; font-size: 13px; }
+
+/* ── Modal / form ── */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(1, 4, 9, 0.7);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 24px 16px; overflow-y: auto; z-index: 50;
+  backdrop-filter: blur(2px);
+}
+.modal {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 22px; width: 100%; max-width: 480px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.modal h2 { margin: 0 0 4px; font-size: 19px; }
+.modal label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--text-dim); }
+.modal .hint { color: #5c6672; font-size: 11px; }
+.modal input {
+  background: var(--bg-input); border: 1px solid var(--border); color: var(--text);
+  border-radius: 9px; padding: 10px 12px; font-size: 15px;
+}
+.modal input:focus { outline: none; border-color: var(--blue); }
+.modal .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+
+@media (max-width: 480px) {
+  .modal .row { grid-template-columns: 1fr; }
+  .cd-num { font-size: 40px; }
+}
